@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+        name: fosstechnix
+        labels:
+                role: myrole
+spec:
+        containers:
+                - name: fosstechnix
+                  image: nginx
+                  ports:
+                          - name: fosstechnix
+                            containerPort: 80
+                            protocol: TCP
