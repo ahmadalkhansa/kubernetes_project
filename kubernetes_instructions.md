@@ -54,7 +54,7 @@
      will get the pod name and store it in the environment variable POD_NAME:, it will prong it
     - In order for the new deployment to be accessible without a proxy, a Service is
     required.
-    
+   
  ## Pods
  - A pod is an kubernetes abstraction that represents a group of one or more 
  application containers, Those resources include:
@@ -152,7 +152,7 @@ for exporting pod name
 - ```kubectl label pod $POD_NAME app=v1``` to apply new label for the pod
 - ```kubectl describe pods $POD_NAME```
 - ```kubectl get pods -l app=v1``` to query using the new label
-###Delet Services
+###Delete Services
 - ```kubectl delete service -l run=kubernetes-bootcamp``` to delete using labels
 - ```kubectl get services``` to confirm
 - to confirm that the route is not exposed ```curl $(minikube ip):$NODE_PORT```
@@ -163,7 +163,7 @@ running ```kubectl exec -ti $POD_NAME curl localhost:8080```
  Services will monitor continuously the running Pods using endpoints, to ensure the traffic is sent only 
  to available Pods.
 - ```kubectl get deployments``` to list deployments.
-- to see the replicaset created by the deployment run ```kubectl get rs```
+- to see the replica set created by the deployment run ```kubectl get rs```
 - to scale the deployment to 4 replicas. ```kubectl scale deployments/kubernetes-bootcamp --replicas=4```
 - ```kubectl get pods -o wide``` to check the change in the number of pods. note,
 the deployments number also changed.
@@ -206,6 +206,7 @@ to export node port. this command is flawed. check node port manually.
 - ```microk8s.kubectl config view --raw > $HOME/.kube/config``` and .kubeconfig
 
 ###Multinode cluster
+-   
 - on all nodes
     - install docker
     - install https support ```sudo apt-get install -y apt-transport-https```
@@ -233,6 +234,21 @@ to export node port. this command is flawed. check node port manually.
     - ```kubectl get pods``` 
     - ```kubectl describe pods```
     - ```kubectl get pods -o wide``` To check pods IP address and its states
-    - ```kubectl delete pod fosstechnix-web-pod(pod name)``` to delete pod.
+    - ```kubectl delete pod fosstechnix``` or ```fosstechnix-web-pod.yml``` to delete pod.
     
+#ALERT 
+Follow this link for aws loadbalancer instructions [https://itnext.io/kubernetes-part-2-a-cluster-set-up-on-aws-with-aws-cloud-provider-and-aws-loadbalancer-f02c3509f2c2]
     
+##FaaS
+FaaS is kubernetes native
+- install Faas
+- Deploy using kubectl:
+    - ```git clone https://github.com/openfaas/faas-netes``` clone the repository
+    - deploy the whole stack ```kubectl apply -f https://raw.githubusercontent.com/openfaas/faas-netes/master/namespaces.yml```
+        - namespace for two commands:
+            - ```openfaas``` for OpenFaas services
+            - ```openfaas-fn``` for functions
+    - Create password for the gateway:
+        - generate random password ```PASSWORD=$(head -c 12 /dev/urandom | shasum| cut -d' ' -f1)```
+        - create FaaS secret in kubectl ```kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password="$PASSWORD"```
+    - Now deploy openFaaS ```cd faas-netes && kubectl apply -f ./yaml```   
